@@ -116,3 +116,71 @@ document.getElementById('saveContact').addEventListener('click', function () {
     document.getElementById('saveContact').removeAttribute('data-index');
   }
   
+  // Sorting contacts
+  document.getElementById('sortByName').addEventListener('click', function () {
+    chrome.storage.local.get({ contacts: [] }, function (result) {
+      const sortedContacts = result.contacts.sort((a, b) => a.name.localeCompare(b.name));
+      displayContacts(sortedContacts);
+    });
+  });
+  
+  document.getElementById('sortByEmail').addEventListener('click', function () {
+    chrome.storage.local.get({ contacts: [] }, function (result) {
+      const sortedContacts = result.contacts.sort((a, b) => a.email.localeCompare(b.email));
+      displayContacts(sortedContacts);
+    });
+  });
+  
+  document.getElementById('sortByCategory').addEventListener('click', function () {
+    chrome.storage.local.get({ contacts: [] }, function (result) {
+      const sortedContacts = result.contacts.sort((a, b) => {
+        if (a.category < b.category) return -1;
+        if (a.category > b.category) return 1;
+        return 0;
+      });
+      displayContacts(sortedContacts);
+    });
+  });
+  
+  // Export contacts to CSV
+  document.getElementById('exportContacts').addEventListener('click', function () {
+    chrome.storage.local.get({ contacts: [] }, function (result) {
+      const contacts = result.contacts;
+      const csvContent = "data:text/csv;charset=utf-8," + 
+        contacts.map(contact => `${contact.name},${contact.email},${contact.phone},${contact.address},${contact.category},${contact.notes}`).join("\n");
+  
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", "contacts.csv");
+      document.body.appendChild(link); // Required for FF
+      link.click();
+    });
+  });
+  
+  // Import contacts from CSV
+  document.getElementById('importFile').addEventListener('change', function (event) {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+  
+    reader.onload = function (e) {
+      const content = e.target.result;
+      const lines = content.split("\n");
+      const contacts = lines.map(line => {
+        const [name, email, phone, address, category, notes] = line.split(",");
+        return { name, email, phone, address, category, notes };
+      });
+  
+      chrome.storage.local.get({ contacts: [] }, function (result) {
+        const existingContacts = result.contacts;
+        const updatedContacts = existingContacts.concat(contacts);
+        chrome.storage.local.set({ contacts: updatedContacts }, function () {
+          alert("Contacts imported successfully!");
+          document.getElementById('viewContacts').click(); // Refresh contact list
+        });
+      });
+    };
+  
+    reader.readAsText(file);
+  });
+  
