@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Real Estate CRM</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <h2>Real Estate CRM</h2>
+
+    <!-- Add Contact Form -->
+    <div class="form-container">
+      <input type="text" id="contactName" placeholder="Enter Contact Name" required />
+      <input type="text" id="contactEmail" placeholder="Enter Contact Email" required />
+      <input type="text" id="contactPhone" placeholder="Enter Contact Phone (optional)" />
+      <input type="text" id="contactAddress" placeholder="Enter Contact Address (optional)" />
+      <select id="contactCategory">
+        <option value="">Select Category</option>
+        <option value="Buyer">Buyer</option>
+        <option value="Seller">Seller</option>
+        <option value="Agent">Agent</option>
+      </select>
+      <textarea id="contactNotes" placeholder="Enter Notes (optional)"></textarea>
+      <button id="saveContact">Save Contact</button>
+    </div>
+
+    <input type="text" id="searchInput" placeholder="Search Contacts" />
+
+    <!-- View Contacts -->
+    <button id="viewContacts">View Contacts</button>
+
+    <!-- Contact List -->
+    <div id="contactList" class="contact-list"></div>
+
+    <script src="popup.js"></script>
+  </body>
+</html>
